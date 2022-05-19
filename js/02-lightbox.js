@@ -5,16 +5,22 @@ import { galleryItems } from "./gallery-items.js";
 
 const galleryElements = document.querySelector(".gallery");
 const markupElements = createImageMarkup(galleryItems);
-galleryElements.insertAdjacentHTML("afterbegin", markupElements);
+
 function createImageMarkup(galleryItems) {
   return galleryItems
-    .map(({ preview, original, decription }) => {
-      return `
-<a class="gallery__item" href="${original}">
-  <img class="gallery__image" src="${preview}" alt="${decription}" />
+    .map(({ preview, original, description }) => {
+      return `<a class="gallery__item" href="${original}">
+  <img class="gallery__image" src="${preview}" alt="${description}" />
 </a>
     `;
     })
     .join("");
 }
-const lightBox = new SimpleLightbox(".gallery a", { captionDelay: 250 });
+galleryElements.insertAdjacentHTML("beforeend", markupElements);
+let lightBox = new SimpleLightbox(".gallery a", {
+  captionDelay: 250,
+  captionsData: "alt",
+});
+lightBox.on("show.simplelightbox", function () {});
+
+console.log(galleryItems);

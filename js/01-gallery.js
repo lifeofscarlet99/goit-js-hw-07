@@ -10,28 +10,48 @@ function createImageCardMarkup(galleryItems) {
   return galleryItems
     .map(({ preview, original, decription }) => {
       return `
-       <li class = "gallery__item">
-    <a class = "gallery__link" href = "${original}">
+       <div class = "gallery__item">
+    <a class = "gallery__link" href = "large-image.jpg">
     <img class = "gallery__image" 
     src = "${preview}"
     data-source = "${original}"
     alt = "${decription}"
     />
     </a>
-    </li>
+    </div>
     `;
     })
     .join("");
 }
-//console.log(createImageCardMarkup(galleryItems));
 
-// import * as basicLightbox from "basiclightbox";
-// galleryContainer.addEventListener("click", onImageclick);
-// function onImageclick(event) {
-//   event.preventDefault();
-//   if (!event.target.classList.contains("gallery__image")) return;
-// }
-const image = basicLightbox.create(`
-    <img width="1400" height="900" src="${preview}">
-  `);
-image.show();
+galleryContainer.addEventListener("click", onImageclick);
+function onImageclick(event) {
+  event.preventDefault();
+  if (!event.target.classList.contains("gallery__image")) {
+    return;
+  }
+  const largeImageEl = event.target.dataset.source;
+  const image = basicLightbox.create(
+    `
+		<img width="1400" height="900" src="${largeImageEl}">
+	`,
+    {
+      onShow: (image) => {
+        window.addEventListener("keydown", onEscDown, { once: true });
+      },
+
+      onClose: (image) => {
+        window.removeEventListener("keydown", onEscDown);
+      },
+    }
+  );
+
+  image.show();
+
+  function onEscDown(event) {
+    if (event.code === "Escape") {
+      console.log(event);
+      image.close();
+    }
+  }
+}
